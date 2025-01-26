@@ -21,6 +21,7 @@ _SUPPORTED_PROVIDERS = {
     "xai",
     "deepseek",
     "litellm",
+    "klusterai",
 }
 
 
@@ -129,6 +130,14 @@ class GenericLLMProvider:
             from langchain_community.chat_models.litellm import ChatLiteLLM
 
             llm = ChatLiteLLM(**kwargs)
+        elif provider == "klusterai":
+            _check_pkg("langchain_openai")  # Ensure required package is installed
+            from langchain_openai import ChatOpenAI
+            
+            llm = ChatOpenAI(openai_api_base="https://api.kluster.ai/v1",
+                      openai_api_key=os.environ["KLUSTER_API_KEY"],
+                      **kwargs
+                  )
         else:
             supported = ", ".join(_SUPPORTED_PROVIDERS)
             raise ValueError(
